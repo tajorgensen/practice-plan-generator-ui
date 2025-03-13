@@ -95,7 +95,6 @@ export interface Sport {
     focusAreaId: number | '';
     totalDurationMinutes: number;
     warmupDurationMinutes: number;
-    teamTimeDurationMinutes: number | '';
     stationTotalDurationMinutes: number | '';
     stationRotationMinutes: number | '';
     positionGroupDurationMinutes: number | '';

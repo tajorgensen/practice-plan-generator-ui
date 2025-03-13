@@ -53,50 +53,42 @@ export const getSectionTypeColor = (sectionType: string): string => {
 };
 
 interface PlanDescriptionParams {
-  totalDurationMinutes?: number;
-  sportName?: string;
-  focusAreaName?: string;
-  warmupDurationMinutes?: number;
-  coachingStations?: number;
-  stationDurationMinutes?: number;
-  teamTimeDurationMinutes?: number;
-}
-
-/**
- * Format a plan description based on parameters
- * @param {PlanDescriptionParams} params - Plan parameters
- * @returns {string} - Formatted description
- */
-export const formatPlanDescription = (params: PlanDescriptionParams): string => {
-  const { 
-    totalDurationMinutes = 0, 
-    sportName = '', 
-    focusAreaName = '', 
-    warmupDurationMinutes = 0,
-    coachingStations = 0,
-    stationDurationMinutes,
-    teamTimeDurationMinutes = 0
-  } = params;
-  
-  let description = `A ${totalDurationMinutes}-minute ${sportName} practice plan`;
-  
-  if (focusAreaName && focusAreaName !== 'Mixed') {
-    description += ` focusing on ${focusAreaName}`;
+    totalDurationMinutes?: number;
+    sportName?: string;
+    focusAreaName?: string;
+    warmupDurationMinutes?: number;
+    coachingStations?: number;
+    stationDurationMinutes?: number;
   }
   
-  description += `. Features a ${warmupDurationMinutes}-minute warmup followed by ${coachingStations}`;
-  
-  if (stationDurationMinutes) {
-    description += ` coaching stations (${stationDurationMinutes} minutes each)`;
-  } else {
-    description += ` coaching stations`;
-  }
-  
-  if (teamTimeDurationMinutes && teamTimeDurationMinutes > 0) {
-    description += ` and a ${teamTimeDurationMinutes}-minute team activity.`;
-  } else {
-    description += `.`;
-  }
-  
-  return description;
-};
+  /**
+   * Format a plan description based on parameters
+   * @param {PlanDescriptionParams} params - Plan parameters
+   * @returns {string} - Formatted description
+   */
+  export const formatPlanDescription = (params: PlanDescriptionParams): string => {
+    const { 
+      totalDurationMinutes = 0, 
+      sportName = '', 
+      focusAreaName = '', 
+      warmupDurationMinutes = 0,
+      coachingStations = 0,
+      stationDurationMinutes
+    } = params;
+    
+    let description = `A ${totalDurationMinutes}-minute ${sportName} practice plan`;
+    
+    if (focusAreaName && focusAreaName !== 'Mixed') {
+      description += ` focusing on ${focusAreaName}`;
+    }
+    
+    description += `. Features a ${warmupDurationMinutes}-minute warmup followed by ${coachingStations}`;
+    
+    if (stationDurationMinutes) {
+      description += ` coaching stations (${stationDurationMinutes} minutes each).`;
+    } else {
+      description += ` coaching stations.`;
+    }
+    
+    return description;
+  };

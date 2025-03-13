@@ -31,13 +31,12 @@ export const AGE_GROUPS: SelectOption[] = [
 
 // Default values for practice plan parameters
 export const DEFAULT_FORM_VALUES: FormDataType = {
-  sportId: 1, // Basketball by default
+  sportId: 2, // Basketball by default
   focusAreaId: '',
   totalDurationMinutes: 90,
   warmupDurationMinutes: 15,
-  teamTimeDurationMinutes: 15,
-  stationTotalDurationMinutes: 45,
-  stationRotationMinutes: 5,
+  stationTotalDurationMinutes: 30, // Increased from 45 to account for removed team time
+  stationRotationMinutes: 10,
   positionGroupDurationMinutes: 15,
   coachingStations: 3,
   positionId: '',
@@ -63,13 +62,9 @@ export const VALIDATION_CONSTRAINTS = {
     min: 5,
     max: 30
   },
-  teamTimeDurationMinutes: {
-    min: 0,
-    max: 60
-  },
   stationTotalDurationMinutes: {
     min: 0,
-    max: 120
+    max: 180 // Increased from 120 to account for removed team time
   },
   stationRotationMinutes: {
     min: 3,

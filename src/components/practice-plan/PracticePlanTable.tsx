@@ -1,20 +1,18 @@
-import React, { useState } from 'react';
-import { Clock, BarChart, Users, CheckCircle, RotateCw, Users2 } from 'lucide-react';
+import React from 'react';
+import { Clock, BarChart, Users, CheckCircle, Users2, RotateCw } from 'lucide-react';
 import { calculateTotalTime } from '../../utils/helper';
-import { PracticePlan, PracticePlanSection, StationGroupDto, StationDto } from '../../types';
+import { PracticePlan } from '../../types';
 
 interface PracticePlanTableProps {
   practicePlan: PracticePlan;
 }
 
 /**
- * Practice Plan Table component with support for rotations
+ * Practice Plan Table component with updated time display for groups
  * @param {PracticePlanTableProps} props
  * @returns {JSX.Element}
  */
 const PracticePlanTable = ({ practicePlan }: PracticePlanTableProps): JSX.Element => {
-  const [selectedRotation, setSelectedRotation] = useState(0);
-
   if (!practicePlan || !practicePlan.sections) {
     return <div>No practice plan data available</div>;
   }
@@ -82,63 +80,52 @@ const PracticePlanTable = ({ practicePlan }: PracticePlanTableProps): JSX.Elemen
               const startTime = `${hours > 0 ? hours + 'h ' : ''}${minutes}m`;
               
               if (section.concurrent && section.stationGroups) {
-                // Handle the stations section with rotations
+                // Handle the stations section
                 return (
                   <React.Fragment key={`section-${sectionIndex}`}>
+                    {/* Section header row */}
                     <tr className="bg-gray-100">
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
                         {startTime}
                       </td>
-                      <td colSpan={3} className="px-4 py-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {section.sectionType} - Rotations
-                            </div>
-                            <div className="text-xs text-gray-500 mt-1">
-                              {section.stationGroups.length} rotations with {section.stationGroups[0]?.stations.length || 0} stations
-                            </div>
-                          </div>
-                          <div className="flex items-center">
-                            <span className="mr-2 text-sm text-gray-700">Select Rotation:</span>
-                            <select 
-                              value={selectedRotation}
-                              onChange={(e) => setSelectedRotation(parseInt(e.target.value))}
-                              className="py-1 px-2 border rounded text-sm"
-                            >
-                              {section.stationGroups.map((_, idx) => (
-                                <option key={`rotation-${idx}`} value={idx}>
-                                  Rotation {idx + 1}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
+                      <td className="px-4 py-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {section.sectionType}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {section.stationGroups.length} rotations with {section.stationGroups[0]?.stations.length || 0} stations
                         </div>
                       </td>
+                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {section.durationMinutes} min
+                      </td>
+                      <td className="px-4 py-4 text-sm text-gray-500">
+                        <span className="text-gray-400">Various</span>
+                      </td>
                     </tr>
-
-                    {/* Show selected rotation */}
-                    {section.stationGroups[selectedRotation]?.stations.map((station, stationIndex) => (
+                    
+                    {/* Individual station rows - without duration */}
+                    {section.stationGroups[0]?.stations.map((station, stationIndex) => (
                       <tr 
-                        key={`station-${sectionIndex}-${selectedRotation}-${stationIndex}`}
-                        className={stationIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                        key={`station-${sectionIndex}-${stationIndex}`}
+                        className="bg-white border-t border-gray-100"
                       >
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
-                          {/* Show station start time offset from section start */}
-                          {startTime}+{stationIndex * (section.stationGroups[selectedRotation]?.durationMinutes || 0) / station.stationNumber}m
+                          {/* Empty time cell */}
                         </td>
                         <td className="px-4 py-4">
                           <div className="text-sm font-medium text-gray-900">
                             <div className="flex items-center">
                               <RotateCw size={16} className="text-indigo-500 mr-2" />
-                              <span>Station {station.stationNumber} - Group {station.stationNumber}</span>
+                              <span>Station {station.stationNumber}: {station.drill.name}</span>
                             </div>
                           </div>
-                          <div className="text-sm text-gray-500">{station.drill.name}</div>
+                          {station.drill.description && (
+                            <div className="text-sm text-gray-500">{station.drill.description}</div>
+                          )}
                         </td>
                         <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {/* Calculate time per station */}
-                          {section.stationGroups[selectedRotation]?.durationMinutes / station.stationNumber} min
+                          {/* Empty duration cell */}
                         </td>
                         <td className="px-4 py-4 text-sm text-gray-500">
                           {station.drill.equipment && station.drill.equipment.length > 0 ? (
@@ -252,13 +239,18 @@ const PracticePlanTable = ({ practicePlan }: PracticePlanTableProps): JSX.Elemen
             if (section.concurrent && section.stationGroups) {
               return (
                 <div key={`station-instructions-${sectionIndex}`} className="border rounded-lg p-4 bg-white shadow-sm">
-                  <h4 className="text-lg font-medium mb-4">Stations</h4>
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-lg font-medium">Stations</h4>
+                    <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+                      {section.durationMinutes} min
+                    </span>
+                  </div>
                   
                   <div className="mb-4 p-3 bg-yellow-50 rounded">
                     <h5 className="font-medium text-amber-800">Rotation Pattern:</h5>
                     <p className="text-amber-800">
-                      Groups rotate between stations every {section.stationGroups[0]?.durationMinutes / section.stationGroups[0]?.stations.length} minutes.
-                      Complete {section.stationGroups.length} full rotations.
+                      {section.stationGroups.length} rotations with {section.stationGroups[0]?.stations.length || 0} stations.
+                      Each station lasts approximately {Math.round(section.durationMinutes / (section.stationGroups.length * section.stationGroups[0]?.stations.length))} minutes.
                     </p>
                   </div>
 
@@ -282,6 +274,19 @@ const PracticePlanTable = ({ practicePlan }: PracticePlanTableProps): JSX.Elemen
                           <div className="mt-2">
                             <h6 className="text-sm font-medium">Coaching Points:</h6>
                             <p className="text-sm text-blue-800 bg-blue-50 p-2 rounded">{station.coachingPoints}</p>
+                          </div>
+                        )}
+
+                        {station.drill.equipment && station.drill.equipment.length > 0 && (
+                          <div className="mt-2">
+                            <h6 className="text-sm font-medium">Equipment:</h6>
+                            <ul className="list-disc list-inside text-sm">
+                              {station.drill.equipment.map((item, i) => (
+                                <li key={i}>
+                                  {item.equipmentName} ({item.quantity})
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         )}
                       </div>

@@ -27,19 +27,19 @@ const usePracticePlan = (): UsePracticePlanReturn => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  /**
-   * Handle form input changes
-   * @param {ChangeEvent<HTMLInputElement | HTMLSelectElement>} e - Input change event
-   */
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+/**
+ * Handle form input changes
+ * @param {ChangeEvent<HTMLInputElement | HTMLSelectElement>} e - Input change event
+ */
+const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
     const { name, value } = e.target;
     
     // Convert numeric values to numbers and empty strings to empty strings
     const processedValue = 
       value === '' ? '' : 
       ['sportId', 'focusAreaId', 'positionId', 'totalDurationMinutes', 
-       'warmupDurationMinutes', 'teamTimeDurationMinutes', 'stationDurationMinutes', 
-       'coachingStations', 'maxEquipmentTypes'].includes(name) 
+       'warmupDurationMinutes', 'stationTotalDurationMinutes', 'stationRotationMinutes', 
+       'positionGroupDurationMinutes', 'coachingStations', 'maxEquipmentTypes'].includes(name) 
         ? parseInt(value, 10) 
         : value;
     

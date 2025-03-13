@@ -6,7 +6,7 @@ import { FormDataType, Sport, FocusArea, Position } from '../../types';
 interface PracticeParametersFormProps {
   formData: FormDataType;
   handleInputChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void>;
   sports: Sport[];
   focusAreas: FocusArea[];
   positions: Position[];
@@ -149,18 +149,6 @@ const PracticeParametersForm = ({
           min={VALIDATION_CONSTRAINTS.positionGroupDurationMinutes.min}
           max={VALIDATION_CONSTRAINTS.positionGroupDurationMinutes.max}
           placeholder="Optional position-specific work"
-        />
-        
-        {/* Team Time */}
-        <FormInput
-          type="number"
-          name="teamTimeDurationMinutes"
-          value={formData.teamTimeDurationMinutes}
-          onChange={handleInputChange}
-          label="Team Time (minutes)"
-          min={VALIDATION_CONSTRAINTS.teamTimeDurationMinutes.min}
-          max={VALIDATION_CONSTRAINTS.teamTimeDurationMinutes.max}
-          placeholder="Optional team activities"
         />
         
         {/* Misc Parameters */}
